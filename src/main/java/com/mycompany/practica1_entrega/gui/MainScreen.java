@@ -4,6 +4,8 @@
  */
 package com.mycompany.practica1_entrega.gui;
 
+import com.mycompany.practica1_entrega.data.Rental;
+import com.mycompany.practica1_entrega.logic.RentalManager;
 import javax.swing.JMenuItem;
 import javax.swing.table.DefaultTableModel;
 
@@ -14,16 +16,23 @@ import javax.swing.table.DefaultTableModel;
 public class MainScreen extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainScreen.class.getName());
+    private RentalManager manager;
 
     public MainScreen() {
         initComponents();
+        manager = new RentalManager();
         
-        //Definim les columnes de la taula
+        manager.addGames();
+        manager.addUsers();
+        manager.addStock();
+        manager.addRentals();
+        
+        //Definimos las columnas de la tabla
         String [] columns = {"Núm. registre", "Titol del joc", "Usuari que l'ha llogat", "Plataforma", "Data d'inici", "Data de tornada", "Gènere"};
         int totalRents = 0;
         
         DefaultTableModel model = new DefaultTableModel(
-            new Object[][] {{"01", "Anno 1800"}},
+            new Object[][] {},
             columns
         ) {
             @Override
@@ -32,11 +41,12 @@ public class MainScreen extends javax.swing.JFrame {
             }
         };
         
-        setResizable(false);
-
         jTable1.setModel(model);
         
-        //Afegim els menus desplegables al JMenuBar
+        //Cargar los alquileres inciales
+        loadRentals();
+        
+        //Añadimos los menus a la JBar
         JMenuItem menuItemRegister = new JMenuItem("Registrar...");
         JMenuItem menuItemReturn = new JMenuItem("Tornar...");
         JMenuItem menuItemCreate = new JMenuItem("Crear...");
@@ -51,7 +61,9 @@ public class MainScreen extends javax.swing.JFrame {
         jMenu3.add(menuItemCreateGame);
         jMenu3.add(menuItemDeleteGame);
         
-        jLabel1.setText("Total de lloguers: " + totalRents);
+        
+        //Configuración básica de la ventana
+        setResizable(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -157,6 +169,34 @@ public class MainScreen extends javax.swing.JFrame {
         }
         java.awt.EventQueue.invokeLater(() -> new MainScreen().setVisible(true));
     }
+    
+    private void loadRentals() {
+
+        DefaultTableModel model =
+            (DefaultTableModel) jTable1.getModel();
+
+        // Limpiamos las filas existentes
+        model.setRowCount(0);
+        int numeroRegistro = 1;
+
+        // Recorremos los alquileres
+        for (Rental rental : manager.getRentals()) {
+            model.addRow(new Object[] {
+                numeroRegistro++,
+                rental.getGame().getName(),
+                rental.getUser().getName(),
+                rental.getPlatform(),
+                rental.getStartDate(),
+                rental.getFinalDate(),
+                rental.getGame().getGenre()
+            });
+        }
+
+        // Actualizamos el contador
+        jLabel1.setText(
+            "Total de lloguers: " + manager.getRentals().size()
+        );
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFrame jFrame1;
