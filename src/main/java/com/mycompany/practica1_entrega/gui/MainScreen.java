@@ -56,7 +56,15 @@ public class MainScreen extends javax.swing.JFrame {
         
         jMenu1.add(menuItemRegister);
         jMenu1.add(menuItemReturn);
+        
+        //Añadimos el menu item de Crear... usuari y su listener
         jMenu2.add(menuItemCreate);
+        menuItemCreate.addActionListener(e -> {
+            CreateUserDialog dialog = new CreateUserDialog(this, true);
+            dialog.setLocationRelativeTo(this);
+            dialog.setVisible(true);
+        });
+        
         jMenu2.add(menuItemDelete);
         jMenu3.add(menuItemCreateGame);
         jMenu3.add(menuItemDeleteGame);

@@ -48,5 +48,16 @@ public class Game {
         this.genre = genre;
     }
     
-    
+    //Gestionar stock al alquilar una unidad
+    public boolean rentUnit(Platform platform) {
+        int available = getStock(platform);
+
+        if (available <= 0) {
+            return false;
+        }
+
+        setStock(platform, available - 1);
+        return true;
+    }
+
 }

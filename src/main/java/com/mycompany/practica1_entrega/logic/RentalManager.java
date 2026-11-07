@@ -19,9 +19,9 @@ import java.util.ArrayList;
  * @author toniferrer
  */
 public class RentalManager {
-    private ArrayList<User> users;
-    private ArrayList<Game> games;
-    private ArrayList<Rental> rentals;
+    private final ArrayList<User> users;
+    private final ArrayList<Game> games;
+    private final ArrayList<Rental> rentals;
 
     public RentalManager() {
         users = new ArrayList<>();
@@ -78,19 +78,21 @@ public class RentalManager {
     }
     
     public void addRentals() {
-    rentals.add(new Rental(
-        users.get(0),
-        games.get(0),
-        PS5,
-        LocalDate.now(),
-        LocalDate.now().plusDays(7),
-        false
-    ));
-}
+        Game zelda = games.get(0);
+        Game valorant = games.get(20);
+
+        if (zelda.rentUnit(PS5)) {
+            rentals.add(new Rental(users.get(0), zelda, PS5, LocalDate.now(), LocalDate.now().plusDays(7), false));
+        }
+
+        if (valorant.rentUnit(PC)) {
+            rentals.add(new Rental(users.get(1), valorant, PC, LocalDate.now(), LocalDate.now().plusDays(5), false));
+        }
+    }
     
     //Obtener los alquileres
     public ArrayList<Rental> getRentals() {
-    return rentals;
+        return rentals;
     }
 
 }
