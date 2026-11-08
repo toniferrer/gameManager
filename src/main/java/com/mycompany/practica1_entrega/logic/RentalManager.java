@@ -110,5 +110,30 @@ public class RentalManager {
             dni, telephone, LocalDate.now()
         ));
     }
+    
+    //Obtener los usuarios
+    public ArrayList<User> getUsers() {
+        return new ArrayList<>(users);
+    }
+
+    //Saber si tienen alquileres activos o no
+    public boolean hasRentals(User user) {
+        for (Rental rental : rentals) {
+            if (rental.getUser().getId() == user.getId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    //Eliminar un usuario
+    public boolean deleteUser(User user) {
+        if (hasRentals(user)) {
+            return false;
+        }
+
+        return users.remove(user);
+    }
 
 }

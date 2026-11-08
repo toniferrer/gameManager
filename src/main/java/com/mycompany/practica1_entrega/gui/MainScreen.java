@@ -65,7 +65,14 @@ public class MainScreen extends javax.swing.JFrame {
             dialog.setVisible(true);
         });
         
+        //Añadimos el menu item de Eliminar... usuari y su listener
         jMenu2.add(menuItemDelete);
+        menuItemDelete.addActionListener(e -> {
+            DeleteUserDialog dialog = new DeleteUserDialog(this, true, manager);
+            dialog.setLocationRelativeTo(this);
+            dialog.setVisible(true);
+        });
+        
         jMenu3.add(menuItemCreateGame);
         jMenu3.add(menuItemDeleteGame);
         
