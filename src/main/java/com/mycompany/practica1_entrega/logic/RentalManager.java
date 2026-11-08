@@ -5,6 +5,7 @@
 package com.mycompany.practica1_entrega.logic;
 
 import com.mycompany.practica1_entrega.data.Game;
+import com.mycompany.practica1_entrega.data.Platform;
 import static com.mycompany.practica1_entrega.data.Platform.PC;
 import static com.mycompany.practica1_entrega.data.Platform.PS5;
 import static com.mycompany.practica1_entrega.data.Platform.SWITCH_2;
@@ -134,6 +135,26 @@ public class RentalManager {
         }
 
         return users.remove(user);
+    }
+    
+    //Añadir un juego nuevo
+    public void addGame(String name, String genre, java.util.Map<Platform, Integer> platformStock) {
+        int newId = 1;
+
+        for (Game game : games) {
+            if (game.getId() >= newId) {
+                newId = game.getId() + 1;
+            }
+        }
+
+        Game game = new Game(newId, name, genre);
+
+        for (java.util.Map.Entry<Platform, Integer> entry
+                : platformStock.entrySet()) {
+            game.setStock(entry.getKey(), entry.getValue());
+        }
+
+        games.add(game);
     }
 
 }

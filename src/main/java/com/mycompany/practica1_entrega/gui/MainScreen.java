@@ -73,7 +73,14 @@ public class MainScreen extends javax.swing.JFrame {
             dialog.setVisible(true);
         });
         
+        //Añadimos el menu item Crear... juego y su listener
         jMenu3.add(menuItemCreateGame);
+        menuItemCreateGame.addActionListener(e -> {
+            CreateGameDialog dialog = new CreateGameDialog(this, true, manager);
+            dialog.setLocationRelativeTo(this);
+            dialog.setVisible(true);
+        });
+        
         jMenu3.add(menuItemDeleteGame);
         
         
