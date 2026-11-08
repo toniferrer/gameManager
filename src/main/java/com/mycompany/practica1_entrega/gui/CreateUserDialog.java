@@ -6,11 +6,15 @@ import java.time.format.DateTimeFormatter;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import com.mycompany.practica1_entrega.logic.RentalManager;
+import javax.swing.JOptionPane;
 
 public class CreateUserDialog extends javax.swing.JDialog {
+    private final RentalManager manager;
     
-    public CreateUserDialog(java.awt.Frame parent, boolean modal) {
+    public CreateUserDialog(java.awt.Frame parent, boolean modal, RentalManager manager) {
         super(parent, modal);
+        this.manager = manager;
         initComponents();
         
         // Fecha de hoy
@@ -57,8 +61,12 @@ public class CreateUserDialog extends javax.swing.JDialog {
         }
 
         updateConfirmButton();
+        
+        jButtonConfirmar.addActionListener(e -> saveUser());
     }
     
+    
+    //Habilitar el botón de confirmar al estar todo completado
     private void updateConfirmButton() {
         boolean complete = !jTextFieldName.getText().trim().isEmpty() && !jTextFieldSurname.getText().trim().isEmpty() && !jTextFieldSurname2.getText().trim().isEmpty() && !jTextFieldDNI.getText().trim().isEmpty() && !jTextFieldMobile.getText().trim().isEmpty();
 
@@ -71,6 +79,28 @@ public class CreateUserDialog extends javax.swing.JDialog {
             jButtonConfirmar.setBackground(Color.LIGHT_GRAY);
             jButtonConfirmar.setForeground(Color.DARK_GRAY);
         }
+    }
+    
+    //Guardem l'usuari nou
+    private void saveUser() {
+        updateConfirmButton();
+
+        if (!jButtonConfirmar.isEnabled()) {
+            return;
+        }
+
+        String mobile = jTextFieldMobile.getText().trim();
+
+        if (!mobile.matches("[0-9]{9}")) {
+            JOptionPane.showMessageDialog(this, "El telèfon ha de tenir 9 dígits.", "Telèfon incorrecte", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        manager.addUser(jTextFieldName.getText().trim(), jTextFieldSurname.getText().trim(), jTextFieldSurname2.getText().trim(), jTextFieldDNI.getText().trim(), Integer.parseInt(mobile));
+
+        JOptionPane.showMessageDialog(this, "Usuari creat correctament.");
+
+        dispose();
     }
 
     @SuppressWarnings("unchecked")

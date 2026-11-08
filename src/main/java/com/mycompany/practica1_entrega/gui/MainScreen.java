@@ -60,7 +60,7 @@ public class MainScreen extends javax.swing.JFrame {
         //Añadimos el menu item de Crear... usuari y su listener
         jMenu2.add(menuItemCreate);
         menuItemCreate.addActionListener(e -> {
-            CreateUserDialog dialog = new CreateUserDialog(this, true);
+            CreateUserDialog dialog = new CreateUserDialog(this, true, manager);
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
         });

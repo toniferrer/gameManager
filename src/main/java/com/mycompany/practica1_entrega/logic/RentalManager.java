@@ -94,5 +94,21 @@ public class RentalManager {
     public ArrayList<Rental> getRentals() {
         return rentals;
     }
+    
+    //Añadir un nuevo usuario
+    public void addUser(String name, String surname, String surname2, String dni, int telephone) {
+        int newId = 1;
+
+        for (User user : users) {
+            if (user.getId() >= newId) {
+                newId = user.getId() + 1;
+            }
+        }
+
+        users.add(new User(
+            newId, name, surname, surname2,
+            dni, telephone, LocalDate.now()
+        ));
+    }
 
 }
