@@ -156,5 +156,30 @@ public class RentalManager {
 
         games.add(game);
     }
+    
+        //Obtener el listado de juegos
+    public ArrayList<Game> getGames() {
+        return new ArrayList<>(games);
+    }
+
+    //Comprobar si hay algún alquiler
+    public boolean hasRentals(Game game) {
+        for (Rental rental : rentals) {
+            if (rental.getGame().getId() == game.getId()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    //Eliminar un juego
+    public boolean deleteGame(Game game) {
+        if (hasRentals(game)) {
+            return false;
+        }
+
+        return games.remove(game);
+    }
 
 }

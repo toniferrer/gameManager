@@ -29,7 +29,6 @@ public class MainScreen extends javax.swing.JFrame {
         
         //Definimos las columnas de la tabla
         String [] columns = {"Núm. registre", "Titol del joc", "Usuari que l'ha llogat", "Plataforma", "Data d'inici", "Data de tornada", "Gènere"};
-        int totalRents = 0;
         
         DefaultTableModel model = new DefaultTableModel(
             new Object[][] {},
@@ -82,6 +81,11 @@ public class MainScreen extends javax.swing.JFrame {
         });
         
         jMenu3.add(menuItemDeleteGame);
+        menuItemDeleteGame.addActionListener(e -> {
+            DeleteGameDialog dialog = new DeleteGameDialog(this, true, manager);
+            dialog.setLocationRelativeTo(this);
+            dialog.setVisible(true);
+        });
         
         
         //Configuración básica de la ventana
@@ -218,7 +222,7 @@ public class MainScreen extends javax.swing.JFrame {
         jLabel1.setText(
             "Total de lloguers: " + manager.getRentals().size()
         );
-}
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFrame jFrame1;
