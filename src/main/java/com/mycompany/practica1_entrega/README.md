@@ -10,10 +10,20 @@ This project allows users to manage information through an application developed
 - Apache NetBeans
 - Maven
 
-## Installation
-1. Clone the repository.
-2. Open the project in NetBeans.
-3. Run the application.
+Clone the repository
+
+git clone https://github.com/toniferrer/gameManager.git
+cd gameManager
+
+Run with NetBeans
+
+Open NetBeans and select File → Open Project.
+
+Select the gameManager folder that contains pom.xml.
+
+Make sure the project uses JDK 26.
+
+Right-click the project and select Run. If NetBeans asks for the main class, select com.mycompany.practica1_entrega.gui.MainScreen.
 
 ## Author
 Toni Ferrer
