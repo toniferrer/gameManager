@@ -13,7 +13,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class MainScreen extends javax.swing.JFrame {
-    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainScreen.class.getName());
     private RentalManager manager;
 
@@ -29,10 +28,7 @@ public class MainScreen extends javax.swing.JFrame {
         //Definimos las columnas de la tabla
         String [] columns = {"Núm. registre", "Titol del joc", "Usuari que l'ha llogat", "Plataforma", "Data d'inici", "Data de tornada", "Gènere"};
         
-        DefaultTableModel model = new DefaultTableModel(
-            new Object[][] {},
-            columns
-        ) {
+        DefaultTableModel model = new DefaultTableModel( new Object[][] {}, columns) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -44,13 +40,9 @@ public class MainScreen extends javax.swing.JFrame {
         //Aplicar colores a la tabla en función al estado del alquiler
         jTable1.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
-            public Component getTableCellRendererComponent(
-                    JTable table, Object value, boolean selected,
-                    boolean hasFocus, int row, int column) {
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean selected, boolean hasFocus, int row, int column) {
 
-                Component cell = super.getTableCellRendererComponent(
-                    table, value, selected, hasFocus, row, column
-                );
+                Component cell = super.getTableCellRendererComponent(table, value, selected, hasFocus, row, column);
 
                 int modelRow = table.convertRowIndexToModel(row);
                 Rental rental = manager.getRentals().get(modelRow);
@@ -106,9 +98,7 @@ public class MainScreen extends javax.swing.JFrame {
         //Añadimos el menu item de Crear... alquiler y su listener
         jMenu1.add(menuItemRegister);
         menuItemRegister.addActionListener(e -> {
-            CreateRentalDialog dialog =
-                new CreateRentalDialog(this, true, manager);
-
+            CreateRentalDialog dialog = new CreateRentalDialog(this, true, manager);
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
 
@@ -152,7 +142,6 @@ public class MainScreen extends javax.swing.JFrame {
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
         });
-        
         
         //Configuración básica de la ventana
         setResizable(false);
@@ -265,8 +254,7 @@ public class MainScreen extends javax.swing.JFrame {
     //Cargar alquileres
     private void loadRentals() {
 
-        DefaultTableModel model =
-            (DefaultTableModel) jTable1.getModel();
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
 
         // Limpiamos las filas existentes
         model.setRowCount(0);
@@ -274,15 +262,7 @@ public class MainScreen extends javax.swing.JFrame {
 
         // Recorremos los alquileres
         for (Rental rental : manager.getRentals()) {
-            model.addRow(new Object[] {
-                numeroRegistro++,
-                rental.getGame().getName(),
-                rental.getUser().getName(),
-                rental.getPlatform(),
-                rental.getStartDate(),
-                rental.getFinalDate(),
-                rental.getGame().getGenre()
-            });
+            model.addRow(new Object[] { numeroRegistro++, rental.getGame().getName(), rental.getUser().getName(), rental.getPlatform(), rental.getStartDate(), rental.getFinalDate(), rental.getGame().getGenre()});
         }
 
         // Actualizamos el contador
