@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.practica1_entrega.logic;
 
 import com.mycompany.practica1_entrega.data.Game;
@@ -15,10 +11,6 @@ import com.mycompany.practica1_entrega.data.User;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-/**
- *
- * @author toniferrer
- */
 public class RentalManager {
     private final ArrayList<User> users;
     private final ArrayList<Game> games;
@@ -181,5 +173,38 @@ public class RentalManager {
 
         return games.remove(game);
     }
+    
+    //Añadir un alquiler
+    public boolean addRental(User user, Game game, Platform platform, LocalDate startDate, LocalDate finalDate) {
+        if (user == null || game == null || platform == null || startDate == null || finalDate == null) {
+            return false;
+        }
 
+        if (!users.contains(user) || !games.contains(game) || finalDate.isBefore(startDate)) {
+            return false;
+        }
+
+        if (!game.rentUnit(platform)) {
+            return false;
+        }
+
+        rentals.add(new Rental(user, game, platform, startDate, finalDate, false));
+
+        return true;
+    }
+    
+    //Devolver un alquiler
+    public boolean returnRental(Rental rental) {
+        if (rental == null || !rentals.contains(rental) || rental.isReturned()) {
+            return false;
+        }
+
+        Game game = rental.getGame();
+        Platform platform = rental.getPlatform();
+
+        game.setStock(platform, game.getStock(platform) + 1);
+        rental.setReturned(true);
+
+        return true;
+    }
 }

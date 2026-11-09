@@ -124,7 +124,7 @@
     </Container>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="jLabel1"/>
+        <Property name="text" type="java.lang.String" value="Alquilers"/>
       </Properties>
     </Component>
   </SubComponents>

@@ -53,8 +53,27 @@ public class MainScreen extends javax.swing.JFrame {
         JMenuItem menuItemCreateGame = new JMenuItem("Crear...");
         JMenuItem menuItemDeleteGame = new JMenuItem("Borrar...");
         
+        //Añadimos el menu item de Crear... alquiler y su listener
         jMenu1.add(menuItemRegister);
+        menuItemRegister.addActionListener(e -> {
+            CreateRentalDialog dialog =
+                new CreateRentalDialog(this, true, manager);
+
+            dialog.setLocationRelativeTo(this);
+            dialog.setVisible(true);
+
+            // Actualizar la tabla al cerrar el diálogo
+            loadRentals();
+        });
+        
+        //Añadimos el menu item de tornar... alquiler y su listener
         jMenu1.add(menuItemReturn);
+        menuItemReturn.addActionListener(e -> {
+            ReturnRentalDialog dialog = new ReturnRentalDialog(this, true, manager);
+            dialog.setLocationRelativeTo(this);
+            dialog.setVisible(true);
+            loadRentals();
+        });
         
         //Añadimos el menu item de Crear... usuari y su listener
         jMenu2.add(menuItemCreate);
@@ -143,7 +162,7 @@ public class MainScreen extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jLabel1.setText("jLabel1");
+        jLabel1.setText("Alquilers");
 
         jMenu1.setText("Lloguer");
         jMenuBar1.add(jMenu1);
