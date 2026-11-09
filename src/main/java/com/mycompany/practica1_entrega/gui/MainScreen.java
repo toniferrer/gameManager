@@ -1,18 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.mycompany.practica1_entrega.gui;
 
 import com.mycompany.practica1_entrega.data.Rental;
 import com.mycompany.practica1_entrega.logic.RentalManager;
 import javax.swing.JMenuItem;
 import javax.swing.table.DefaultTableModel;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableCellRenderer;
 
-/**
- *
- * @author toniferrer
- */
 public class MainScreen extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainScreen.class.getName());
@@ -42,6 +41,57 @@ public class MainScreen extends javax.swing.JFrame {
         
         jTable1.setModel(model);
         
+        //Aplicar colores a la tabla en función al estado del alquiler
+        jTable1.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(
+                    JTable table, Object value, boolean selected,
+                    boolean hasFocus, int row, int column) {
+
+                Component cell = super.getTableCellRendererComponent(
+                    table, value, selected, hasFocus, row, column
+                );
+
+                int modelRow = table.convertRowIndexToModel(row);
+                Rental rental = manager.getRentals().get(modelRow);
+
+                Color background;
+
+                if (rental.isReturned()) {
+                    background = new Color(206, 240, 211);
+                } else {
+                    background = new Color(250, 213, 213);
+                }
+
+                if (selected) {
+                    background = background.darker();
+                }
+
+                cell.setBackground(background);
+                cell.setForeground(Color.BLACK);
+                return cell;
+            }
+        });
+
+        //Abrir el dialog de devolver alquiler al pulsar encima
+        jTable1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() != 2 || !SwingUtilities.isLeftMouseButton(e)) {
+                    return;
+                }
+
+                int viewRow = jTable1.rowAtPoint(e.getPoint());
+
+                if (viewRow < 0) {
+                    return;
+                }
+
+                int modelRow = jTable1.convertRowIndexToModel(viewRow);
+                openReturnDialog(manager.getRentals().get(modelRow));
+            }
+        });
+        
         //Cargar los alquileres inciales
         loadRentals();
         
@@ -69,10 +119,7 @@ public class MainScreen extends javax.swing.JFrame {
         //Añadimos el menu item de tornar... alquiler y su listener
         jMenu1.add(menuItemReturn);
         menuItemReturn.addActionListener(e -> {
-            ReturnRentalDialog dialog = new ReturnRentalDialog(this, true, manager);
-            dialog.setLocationRelativeTo(this);
-            dialog.setVisible(true);
-            loadRentals();
+            openReturnDialog(null);
         });
         
         //Añadimos el menu item de Crear... usuari y su listener
@@ -215,6 +262,7 @@ public class MainScreen extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new MainScreen().setVisible(true));
     }
     
+    //Cargar alquileres
     private void loadRentals() {
 
         DefaultTableModel model =
@@ -241,6 +289,17 @@ public class MainScreen extends javax.swing.JFrame {
         jLabel1.setText(
             "Total de lloguers: " + manager.getRentals().size()
         );
+    }
+    
+    //Abrir el dialog de devolver alquiler
+    private void openReturnDialog(Rental rental) {
+        ReturnRentalDialog dialog = new ReturnRentalDialog(this, true, manager, rental);
+
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+
+        // Repinta la fila en verde si se ha devuelto el alquiler
+        loadRentals();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -11,12 +11,18 @@ import javax.swing.table.DefaultTableModel;
 public class ReturnRentalDialog extends javax.swing.JDialog {
     
     private final RentalManager manager;
-    private final ArrayList<Rental> activeRentals = new ArrayList<>();
+    private final ArrayList<Rental> displayedRentals = new ArrayList<>();
     private final DefaultTableModel tableModel;
+    private final Rental returnedPreview;
 
-    public ReturnRentalDialog(java.awt.Frame parent, boolean modal, RentalManager manager) {
+    public ReturnRentalDialog(java.awt.Frame parent, boolean modal, RentalManager manager, Rental selectedRental) {
         super(parent, modal);
         this.manager = manager;
+        if (selectedRental != null && selectedRental.isReturned()) {
+            returnedPreview = selectedRental;
+        } else {
+            returnedPreview = null;
+        }
         initComponents();
         
         String[] columns = {
@@ -48,24 +54,43 @@ public class ReturnRentalDialog extends javax.swing.JDialog {
         jButtonClose.addActionListener(e -> dispose());
 
         loadActiveRentals();
+        
+        if (selectedRental != null) {
+            int modelRow = displayedRentals.indexOf(selectedRental);
+
+            if (modelRow >= 0) {
+                int viewRow = jTableRentals.convertRowIndexToView(modelRow);
+
+                if (viewRow >= 0) {
+                    jTableRentals.setRowSelectionInterval(viewRow, viewRow);
+                    jTableRentals.scrollRectToVisible(
+                        jTableRentals.getCellRect(viewRow, 0, true)
+                    );
+                }
+            }
+        }
     }
     
     //Cargar alquileres activos
     private void loadActiveRentals() {
         jTableRentals.clearSelection();
         tableModel.setRowCount(0);
-        activeRentals.clear();
+        displayedRentals.clear();
 
         int registrationNumber = 0;
 
         for (Rental rental : manager.getRentals()) {
             registrationNumber++;
 
-            if (rental.isReturned()) {
+            if (returnedPreview != null) {
+                if (rental != returnedPreview) {
+                    continue;
+                }
+            } else if (rental.isReturned()) {
                 continue;
             }
 
-            activeRentals.add(rental);
+            displayedRentals.add(rental);
             tableModel.addRow(new Object[] {
                 registrationNumber,
                 rental.getGame().getName(),
@@ -82,22 +107,27 @@ public class ReturnRentalDialog extends javax.swing.JDialog {
 
     //Actualizar el seleccionado
     private void updateSelection() {
-        int selectedRow = jTableRentals.getSelectedRow();
-        boolean hasSelection = selectedRow >= 0;
-
-        jButtonReturn.setEnabled(hasSelection);
-
+        int viewRow = jTableRentals.getSelectedRow();
         String[] values = {"—", "—", "—", "—", "—", "—", "—"};
+        boolean canReturn = false;
 
-        if (hasSelection) {
-            jButtonReturn.setBackground(new Color(46, 160, 67));
-            jButtonReturn.setForeground(Color.WHITE);
-
-            int modelRow = jTableRentals.convertRowIndexToModel(selectedRow);
+        if (viewRow >= 0) {
+            int modelRow = jTableRentals.convertRowIndexToModel(viewRow);
+            Rental rental = displayedRentals.get(modelRow);
+            canReturn = !rental.isReturned();
 
             for (int column = 0; column < values.length; column++) {
-                values[column] = String.valueOf(tableModel.getValueAt(modelRow, column));
+                values[column] = String.valueOf(
+                    tableModel.getValueAt(modelRow, column)
+                );
             }
+        }
+
+        jButtonReturn.setEnabled(canReturn);
+
+        if (canReturn) {
+            jButtonReturn.setBackground(new Color(46, 160, 67));
+            jButtonReturn.setForeground(Color.WHITE);
         } else {
             jButtonReturn.setBackground(Color.LIGHT_GRAY);
             jButtonReturn.setForeground(Color.DARK_GRAY);
@@ -117,7 +147,7 @@ public class ReturnRentalDialog extends javax.swing.JDialog {
         }
 
         int modelRow = jTableRentals.convertRowIndexToModel(selectedRow);
-        Rental rental = activeRentals.get(modelRow);
+        Rental rental = displayedRentals.get(modelRow);
 
         if (manager.returnRental(rental)) {
             loadActiveRentals();
